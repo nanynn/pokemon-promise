@@ -77,21 +77,29 @@ console.log("Este es el mensaje después de la llamada del ajax");*/
 
 
 //promises
-$(document).ready(function() {
-
  var pokeHabilidades = function(url){
  	$.ajax({
 			url: url,
 			type: 'GET',
 			dataType: 'json',
+			data: {'limit': '15'},
+		})
+
+ 		.done(function(res){
+			console.log(res.name);
+			$('.poke-espacio').append('<h2>'+res.name+'</h2>');
+		})
+		.done(function(res){
+			$('.poke-espacio').append('<img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/'+ res.id +'.png">');
 		})
 		.done(function(res) {
 			console.log(res);
 			Array.from(res.abilities).forEach(function(el, i){
-				console.log(el.ability.name);
-				$('.poke-espacio p').html(el.ability.name);
+				console.log(el.ability.name); 
+				$('.poke-espacio').append('<p>'+ el.ability.name +'</p>');
 			})
 		})
+		
 		.fail(function() {
 			console.log("error");
 		})
@@ -101,18 +109,18 @@ $(document).ready(function() {
  	
  }
 
+var pokeMostrar = function(){
 	$.ajax({
 		url: 'http://pokeapi.co/api/v2/pokemon',
 		type: 'GET',
 		dataType: 'json',
-		data: {'limit': '15'}, //por algún motivo que no entiendo, me muestra el pokemon que esta en esta posición
+		data: {'limit': '15'},
 	})
 	.done(function(respuesta) {
 		respuesta.results.forEach(function(e){
-			console.log(e.name);
-			$('.poke-espacio h2').html(e.name);
-			pokeHabilidades(e.url);
-		})
+			console.log(e);
+			$('.poke-espacio').append(pokeHabilidades(e.url))
+		});
 	})
 	.done(function(){
 		console.log('Este es el mensaje después de la llamada del ajax' + '<br>');
@@ -123,7 +131,10 @@ $(document).ready(function() {
 	.always(function() {
 		console.log("complete");
 	});
+}
+
+$(document).ready(function() {
+	pokeMostrar();
 	
 });
-
 
